@@ -191,6 +191,8 @@ class Post(KnockerModel, ModelMeta, TranslatableModel):
     objects = GenericDateTaggedManager()
     tags = TaggableManager(blank=True, related_name='djangocms_blog_tags')
 
+    featured = models.BooleanField('featured', default=False)
+
     _metadata = {
         'title': 'get_title',
         'description': 'get_description',
@@ -222,7 +224,7 @@ class Post(KnockerModel, ModelMeta, TranslatableModel):
     class Meta:
         verbose_name = _('blog article')
         verbose_name_plural = _('blog articles')
-        ordering = ('-date_published', '-date_created')
+        ordering = ('-featured', '-date_published', '-date_created')
         get_latest_by = 'date_published'
 
     def __str__(self):

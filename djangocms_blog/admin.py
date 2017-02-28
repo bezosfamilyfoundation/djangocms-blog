@@ -53,7 +53,6 @@ class SiteListFilter(admin.SimpleListFilter):
         except ValidationError as e:  # pragma: no cover
             raise admin.options.IncorrectLookupParameters(e)
 
-
 class BlogCategoryAdmin(EnhancedModelAdminMixin, ModelAppHookConfig, TranslatableAdmin):
     form = CategoryAdminForm
     list_display = [
@@ -76,7 +75,7 @@ class PostAdmin(PlaceholderAdminMixin, FrontendEditableAdminMixin,
                 ModelAppHookConfig, TranslatableAdmin):
     form = PostAdminForm
     list_display = [
-        'title', 'author', 'date_published', 'app_config', 'all_languages_column',
+        'title', 'author', 'featured', 'date_published', 'app_config', 'all_languages_column',
         'date_published_end'
     ]
     search_fields = ('translations__title',)
@@ -86,7 +85,7 @@ class PostAdmin(PlaceholderAdminMixin, FrontendEditableAdminMixin,
     enhance_exclude = ('main_image', 'tags')
     _fieldsets = [
         (None, {
-            'fields': [['title', 'categories', 'publish', 'app_config']]
+            'fields': [['title', 'categories', 'publish', 'featured']]
         }),
         (_('Info'), {
             'fields': [['slug', 'tags'],
@@ -102,6 +101,10 @@ class PostAdmin(PlaceholderAdminMixin, FrontendEditableAdminMixin,
             'fields': [['meta_description', 'meta_title', 'meta_keywords']],
             'classes': ('collapse',)
         }),
+        (_('Advanced'), {
+            'fields': [['app_config']],
+            'classes': ('collapse',)
+        })
     ]
 
     app_config_values = {

@@ -10,50 +10,63 @@
       {% static_placeholder 'blog_hero' %}
 </section>
 
+
+
+
+{% if primary_featured_post %}
 <section class="featured-posts frame frame--fluid">
   <div class="wrapper">
-    <h1>First Featured Post In New Repo Change 3</h1>
+    {% include "djangocms_blog/includes/blog_item.html" with post=primary_featured_post image="true" TRUNCWORDS_COUNT=TRUNCWORDS_COUNT %}
   </div>
 </section>
+{% endif %}
 
+{% if additional_featured_posts %}
 <section class="featured-posts frame frame--fluid frame--alt">
   <div class="wrapper">
-    <h1>Second & Third Featured Posts</h1>
+    {% for post in additional_featured_posts %}
+      {% include "djangocms_blog/includes/blog_item.html" with post=post image="true" TRUNCWORDS_COUNT=TRUNCWORDS_COUNT %}
+    {% endfor %}
   </div>
 </section>
+{% endif %}
+
+
 
 <section class="blog-list">
-    {% block blog_title %}
-    <header>
-        <h2>
-        {% if author %}{% trans "Articles by" %} {{ author.get_full_name }}
-        {% elif archive_date %}{% trans "Archive" %} &ndash; {% if month %}{{ archive_date|date:'F' }} {% endif %}{{ year }}
-        {% elif tagged_entries %}{% trans "Tag" %} &ndash; {{ tagged_entries|capfirst }}
-        {% elif category %}{% trans "Category" %} &ndash; {{ category }}{% endif %}
-        </h2>
-    </header>
-    {% endblock %}
-    {% for post in post_list %}
-        {% include "djangocms_blog/includes/blog_item.html" with post=post image="true" TRUNCWORDS_COUNT=TRUNCWORDS_COUNT %}
-    {% empty %}
-    <p class="blog-empty">{% trans "No article found." %}</p>
-    {% endfor %}
-    {% if author or archive_date or tagged_entries %}
-    <p class="blog-back"><a href="{% url 'djangocms_blog:posts-latest' %}">{% trans "Back" %}</a></p>
-    {% endif %}
-    {% if is_paginated %}
-    <nav class="{% firstof css_grid instance.css_grid %} pagination">
-        {% if page_obj.has_previous %}
-            <a href="?{{ view.page_kwarg }}={{ page_obj.previous_page_number }}">&laquo; {% trans "previous" %}</a>
+    <div class="wrapper">
+        {% block blog_title %}
+        <header>
+            <h2>
+            {% if author %}{% trans "Articles by" %} {{ author.get_full_name }}
+            {% elif archive_date %}{% trans "Archive" %} &ndash; {% if month %}{{ archive_date|date:'F' }} {% endif %}{{ year }}
+            {% elif tagged_entries %}{% trans "Tag" %} &ndash; {{ tagged_entries|capfirst }}
+            {% elif category %}{% trans "Category" %} &ndash; {{ category }}{% endif %}
+            </h2>
+        </header>
+        {% endblock %}
+        {% for post in post_list %}
+            {% include "djangocms_blog/includes/blog_item.html" with post=post image="true" TRUNCWORDS_COUNT=TRUNCWORDS_COUNT %}
+        {% empty %}
+        <p class="blog-empty">{% trans "No article found." %}</p>
+        {% endfor %}
+        {% if author or archive_date or tagged_entries %}
+        <p class="blog-back"><a href="{% url 'djangocms_blog:posts-latest' %}">{% trans "Back" %}</a></p>
         {% endif %}
-        <span class="current">
-            {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ paginator.num_pages }}
-        </span>
-        {% if page_obj.has_next %}
-            <a href="?{{ view.page_kwarg }}={{ page_obj.next_page_number }}">{% trans "next" %} &raquo;</a>
+        {% if is_paginated %}
+        <nav class="{% firstof css_grid instance.css_grid %} pagination">
+            {% if page_obj.has_previous %}
+                <a href="?{{ view.page_kwarg }}={{ page_obj.previous_page_number }}">&laquo; {% trans "previous" %}</a>
+            {% endif %}
+            <span class="current">
+                {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?{{ view.page_kwarg }}={{ page_obj.next_page_number }}">{% trans "next" %} &raquo;</a>
+            {% endif %}
+        </nav>
         {% endif %}
-    </nav>
-    {% endif %}
+    </div>
 </section>
 {% endblock %}
 {% endspaceless %}

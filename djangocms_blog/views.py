@@ -46,13 +46,19 @@ class BaseBlogView(AppConfigMixin, ViewUrlMixin):
         )
         return self.request.build_absolute_uri(url)
 
-    def get_queryset(self):
+    def get_featured_posts(self):
+        return self.get_queryset(True)
+
+    def get_queryset(self, featured=False):
         language = get_language()
         queryset = self.model._default_manager.namespace(
             self.namespace
         ).active_translations(
             language_code=language
+        ).filter(
+            featured=featured
         )
+
         if not getattr(self.request, 'toolbar', False) or not self.request.toolbar.edit_mode:
             queryset = queryset.published()
         setattr(self.request, get_setting('CURRENT_NAMESPACE'), self.config)
@@ -68,8 +74,11 @@ class BaseBlogListView(BaseBlogView):
     base_template_name = 'post_list.html'
 
     def get_context_data(self, **kwargs):
+        featured_posts = list(self.get_featured_posts())
         context = super(BaseBlogListView, self).get_context_data(**kwargs)
         context['TRUNCWORDS_COUNT'] = get_setting('POSTS_LIST_TRUNCWORDS_COUNT')
+        context['primary_featured_post'] = featured_posts.pop(0)
+        context['additional_featured_posts'] = featured_posts
         return context
 
     def get_paginate_by(self, queryset):
