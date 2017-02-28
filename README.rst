@@ -1,4 +1,10 @@
 ==============
+BSP FORK
+==============
+
+This fork of djangocms-blog was created in order to add in featured post functionality to the standard djangocms_blog functionality.
+
+==============
 djangocms-blog
 ==============
 
